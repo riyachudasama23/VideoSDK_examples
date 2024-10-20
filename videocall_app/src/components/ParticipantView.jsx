@@ -4,8 +4,15 @@ import ReactPlayer from "react-player";
 
 function ParticipantView(props) {
   const micRef = useRef(null);
-  const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } =
-    useParticipant(props.participantId);
+  const {
+    webcamStream,
+    micStream,
+    webcamOn,
+    micOn,
+    isLocal,
+    displayName,
+    screenShareStream,
+  } = useParticipant(props.participantId);
 
   const videoStream = useMemo(() => {
     if (webcamOn && webcamStream) {
@@ -57,6 +64,24 @@ function ParticipantView(props) {
           width={"300px"}
           onError={(err) => {
             console.log(err, "participant video error");
+          }}
+        />
+      )}
+
+      {/* Render screen share stream if available */}
+      {screenShareStream && (
+        <ReactPlayer
+          playsinline // extremely crucial prop
+          pip={false}
+          light={false}
+          controls={false}
+          muted={true} // You may want to adjust this based on your needs
+          playing={true}
+          url={screenShareStream} // Use the screen share stream here
+          height={"300px"}
+          width={"300px"}
+          onError={(err) => {
+            console.log(err, "screen share error");
           }}
         />
       )}

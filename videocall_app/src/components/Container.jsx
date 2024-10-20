@@ -5,22 +5,32 @@ import Controls from "./Controls";
 
 function Container(props) {
   const [joined, setJoined] = useState(null);
+
   //Get the method which will be used to join the meeting.
   //We will also get the participants list to display all participants
-  const { join, participants } = useMeeting({
-    //callback for when meeting is joined successfully
-    onMeetingJoined: () => {
-      setJoined("JOINED");
-    },
-    //callback for when meeting is left
-    onMeetingLeft: () => {
-      props.onMeetingLeave();
-      setJoined(null);
-    },
-  });
+  const { join, participants, enableScreenShare, disableScreenShare } =
+    useMeeting({
+      //callback for when meeting is joined successfully
+      onMeetingJoined: () => {
+        setJoined("JOINED");
+      },
+      //callback for when meeting is left
+      onMeetingLeft: () => {
+        props.onMeetingLeave();
+        setJoined(null);
+      },
+    });
   const joinMeeting = () => {
     setJoined("JOINING");
     join();
+  };
+
+  const handleStartScreenShare = () => {
+    enableScreenShare(); // Start screen sharing
+  };
+
+  const handleStopScreenShare = () => {
+    disableScreenShare(); // Stop screen sharing
   };
 
   return (
@@ -28,7 +38,10 @@ function Container(props) {
       <h3>Meeting Id: {props.meetingId}</h3>
       {joined && joined == "JOINED" ? (
         <div>
-          <Controls />
+          <Controls
+            onStartScreenShare={handleStartScreenShare}
+            onStopScreenShare={handleStopScreenShare}
+          />
           //For rendering all the participants in the meeting
           {[...participants.keys()].map((participantId) => (
             <ParticipantView
