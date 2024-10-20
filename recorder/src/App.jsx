@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  MeetingProvider,
+  MeetingConsumer,
+  useMeeting,
+  useParticipant,
+} from "@videosdk.live/react-sdk";
+
+import { authToken, createMeeting } from "./API";
+import Container from "./components/Container";
+import JoinScreen from "./components/JoinScreen";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [meetingId, setMeetingId] = useState(null);
+  //const [mode, setMode] = useState("CONFERENCE");
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  //You have to get the MeetingId from the API created earlier
+  const getMeetingAndToken = async (id) => {
+    const meetingId =
+      id == null ? await createMeeting({ token: authToken }) : id;
+    setMeetingId(meetingId);
+  };
+
+  const onMeetingLeave = () => {
+    setMeetingId(null);
+  };
+
+  return authToken && meetingId ? (
+    <MeetingProvider
+      config={{
+        meetingId,
+        micEnabled: true,
+        webcamEnabled: true,
+        name: "Riya Chudasama",
+        //This will be the mode of the participant CONFERENCE or VIEWER
+      }}
+      token={authToken}
+    >
+      <Container meetingId={meetingId} onMeetingLeave={onMeetingLeave} />{" "}
+      {/* <MeetingView */}
+    </MeetingProvider>
+  ) : (
+    <JoinScreen getMeetingAndToken={getMeetingAndToken} />
+  );
 }
 
-export default App
+export default App;
