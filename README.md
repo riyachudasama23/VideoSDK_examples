@@ -36,7 +36,7 @@ This project demonstrates how to implement screen sharing functionality in a vid
 4. Usage
   Start the application:
     ```bash
-    npm start
+    npm run dev
     ```
 ## 2. Recording
 
@@ -65,7 +65,7 @@ This project illustrates how to implement recording functionality for video call
 4. Usage
   Start the application:
     ```bash
-    npm start
+    npm run dev
     ```
 
 ## 3. Getting Started
